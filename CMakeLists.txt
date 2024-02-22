@@ -1,10 +1,18 @@
-add_library(vulkan-1 SHARED IMPORTED GLOBAL)
+add_library(vulkan-1 INTERFACE)
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-   set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
-else()
-   set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
-endif()	
+if (WIN32)
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
+       set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
+    else()
+       set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
+    endif()
+endif()
+
+target_include_directories(vulkan-1 INTERFACE include)
+
+if (UNIX)
+    target_link_libraries(vulkan-1 INTERFACE vulkan)
+endif()
 
 set(SPIRV_SOURCES
 
@@ -360,5 +368,3 @@ target_include_directories(spirv-tools-opt PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/i
 
 get_property(dirs-opt TARGET spirv-tools-opt PROPERTY INCLUDE_DIRECTORIES)
 target_include_directories(spirv-tools-opt_obj PRIVATE ${dirs-opt})
-
-
