@@ -1,18 +1,16 @@
-add_library(vulkan-1 INTERFACE)
-
 if (WIN32)
+    add_library(vulkan-1 SHARED IMPORTED GLOBAL)
     if (CMAKE_BUILD_TYPE MATCHES Debug)
        set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
     else()
        set_target_properties(vulkan-1 PROPERTIES IMPORTED_IMPLIB "${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan-1.lib")
     endif()
+else()
+    add_library(vulkan-1 INTERFACE)
+    target_link_libraries(vulkan-1 INTERFACE vulkan)
 endif()
 
 target_include_directories(vulkan-1 INTERFACE include)
-
-if (UNIX)
-    target_link_libraries(vulkan-1 INTERFACE vulkan)
-endif()
 
 set(SPIRV_SOURCES
 
